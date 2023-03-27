@@ -91,8 +91,8 @@ def login(client_socket, client_address):
             if opcao == '2':
                 entrar_canal(client_socket, client_address)
         else:
-            client_socket.send('Login ou senha incorretos'.encode('utf-8'))
-            
+            continue
+    client_socket.send('Login ou senha incorretos'.encode('utf-8'))    
 
 # Função para lidar com um novo cliente
 def handle_client(client_socket, client_address):
@@ -103,6 +103,12 @@ def handle_client(client_socket, client_address):
                 name = client['name']
         message = (f'{name}: ' + client_socket.recv(BUFFER_SIZE).decode('utf-8'))
         if not message:
+            # O cliente desconectou
+            clientes.remove(client_socket)
+            print(f'Cliente desconectado: {client_address}')
+            break
+        
+        elif message == 'sair do chat':
             # O cliente desconectou
             clientes.remove(client_socket)
             print(f'Cliente desconectado: {client_address}')
